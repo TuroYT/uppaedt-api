@@ -20,16 +20,10 @@ group_links = {
     "but1_g2": "https://ade.univ-pau.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources=4963,4990&projectId=6&calType=ical&nbWeeks=99",
     "but1_g3": "https://ade.univ-pau.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources=4964,4991&projectId=6&calType=ical&nbWeeks=99",
     "but1_g4": "https://ade.univ-pau.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources=4965,4992&projectId=6&calType=ical&nbWeeks=99",
-    "s3_g1": "",
-    "s3_altg1": "",
-    "s3_altg2": "",
-    "s4_cyber": "",
-    "s4_rom" : "", 
-    "s4_pilpro" : "",
-    "but3_cyber1" : "",
-    "but3_cyber2" : "", 
-    "but3_rom" : "", 
-    "but3_pilpro" : "", 
+
+    "s4_cyber": "https://ade.univ-pau.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources=4975&projectId=6&calType=ical&nbWeeks=4",
+    "s4_rom" : "https://ade.univ-pau.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources=26709&projectId=6&calType=ical&nbWeeks=4", 
+    "s4_pilpro" : "https://ade.univ-pau.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources=4987&projectId=6&calType=ical&nbWeeks=4",
 }
 
 app = FastAPI()
