@@ -32,7 +32,7 @@ app = FastAPI()
 @app.get("/api/planning/getPlanningPerName/{groupname}")
 def read_root(groupname : str, response:Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
-    return get_json_from_icsLink(group_links[groupname])
+    return get_json_from_icsLink(group_links[groupname], groupname)
 
 
 

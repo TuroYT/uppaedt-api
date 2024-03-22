@@ -1,8 +1,9 @@
+import time
 import icalendar
-import json
 from pytz import timezone
 import requests
 import os
+import json
 
 def ics_to_json(file_path):
     # Définir le fuseau horaire de Paris
@@ -49,9 +50,25 @@ def ics_to_json(file_path):
     return events
 
 
-def get_json_from_icsLink(ics_link):
-    data = requests.get(ics_link).content
-    open("tmp","wb").write(data)
-    res = ics_to_json("tmp")
-    os.remove("tmp")
-    return res
+
+
+def get_json_from_icsLink(ics_link, groupname):
+    print(f"Le groupe {groupname} a été demandé")
+    try :
+        if os.path.exists(groupname) and (os.path.getmtime(groupname) > time.time() - 86400):
+            return json.loads(open(groupname).read())
+        else:
+            data = requests.get(ics_link).content
+            open("tmp","wb").write(data)
+            res = ics_to_json("tmp")
+            os.remove("tmp")
+            open(f"{groupname}","w").write(json.dumps(res))
+            return res
+    except :
+        data = requests.get(ics_link).content
+        open("tmp","wb").write(data)
+        res = ics_to_json("tmp")
+        os.remove("tmp")
+        print("Une erreur est survenue")
+        return res
+    
