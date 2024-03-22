@@ -36,5 +36,5 @@ Start the server
 Start the server
 
 ```bash
-  docker run -d -p 9999:9999 --restart always turodev/edt4rt-api:1.0.0
+  docker run -d -p 9999:9999 --restart always turodev/edt4rt-api
 ```
