@@ -65,6 +65,10 @@ def get_json_from_icsLink(ics_link, groupname):
             open(f"{groupname}","w").write(json.dumps(res))
             return res
     except :
+        try :
+            os.remove(groupname)
+        except:
+            pass
         data = requests.get(ics_link).content
         open("tmp","wb").write(data)
         res = ics_to_json("tmp")
