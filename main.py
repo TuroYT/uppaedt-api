@@ -35,6 +35,13 @@ def read_root(groupname : str, response:Response):
     return get_json_from_icsLink(group_links[groupname], groupname)
 
 
+@app.post("/api/planning/getPlanningPerLink/}")
+def read_root(link : str, response:Response):
+    print(link)
+    response.headers["Access-Control-Allow-Origin"] = '*'
+    return get_json_from_icsLink(link)
+
+
 
 
 

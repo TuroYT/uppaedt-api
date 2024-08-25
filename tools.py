@@ -4,6 +4,8 @@ from pytz import timezone
 import requests
 import os
 import json
+from datetime import datetime, timedelta
+
 
 def ics_to_json(file_path):
     # Définir le fuseau horaire de Paris
@@ -14,13 +16,21 @@ def ics_to_json(file_path):
         cal = icalendar.Calendar.from_ical(f.read())
 
     events = []
-
     # Parcourir tous les événements dans le calendrier
     for component in cal.walk():
         if component.name == "VEVENT":
             # Convertir les dates en heure de Paris
-            start = component.get('dtstart').dt.astimezone(paris_tz)
-            end = component.get('dtend').dt.astimezone(paris_tz)
+            start = component.get('dtstart').dt
+            end = component.get('dtend').dt
+
+            # Check if start and end are date objects and convert them to datetime
+            if isinstance(start, datetime) is False:
+                start = datetime.combine(start, datetime.min.time())
+            if isinstance(end, datetime) is False:
+                end = datetime.combine(end, datetime.min.time())
+
+            start = start.astimezone(paris_tz)
+            end = end.astimezone(paris_tz)
 
             description = str(component.get('description')).split("\n")
 
@@ -52,27 +62,21 @@ def ics_to_json(file_path):
 
 
 
-def get_json_from_icsLink(ics_link, groupname):
-    print(f"Le groupe {groupname} a été demandé")
+def get_json_from_icsLink(ics_link, groupname=None):
+    '''
+    Cette fonction prend en paramètre un lien ics et retourne un json contenant les événements du calendrier
+    '''
+    if groupname is None:
+        print("lien ics demandé : ", ics_link)
+    else:
+        print(f"Le groupe {groupname} a été demandé")
     try :
-        if os.path.exists(groupname) and (os.path.getmtime(groupname) > time.time() - 86400):
-            return json.loads(open(groupname).read())
-        else:
-            data = requests.get(ics_link).content
-            open("tmp","wb").write(data)
-            res = ics_to_json("tmp")
-            os.remove("tmp")
-            open(f"{groupname}","w").write(json.dumps(res))
-            return res
-    except :
-        try :
-            os.remove(groupname)
-        except:
-            pass
-        data = requests.get(ics_link).content
+        data = requests.get(ics_link, verify=False).content
         open("tmp","wb").write(data)
         res = ics_to_json("tmp")
         os.remove("tmp")
-        print("Une erreur est survenue")
         return res
+    except Exception as e:
+        print("Une erreur est survenue")
+        return {"error": f"Une erreur est survenue {e}"}
     
