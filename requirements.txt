@@ -3,3 +3,4 @@ fastapi
 icalendar
 pytz
 requests
+mysql.connector
