@@ -1,7 +1,9 @@
 from fastapi import FastAPI, Response
 from tools import get_json_from_icsLink
 from fastapi.middleware.cors import CORSMiddleware
+from database import BDD
 
+BDD = BDD()
 app = FastAPI()
 
 origins = ["*"]
@@ -41,6 +43,10 @@ def read_root(link : str, response:Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
     return get_json_from_icsLink(link)
 
+@app.get("/api/planning/getPlanningPerId/{id}")
+def read_root(id : int, response:Response):
+    response.headers["Access-Control-Allow-Origin"] = '*'
+    return get_json_from_icsLink(BDD.get_ic_link(id))
 
 
 
