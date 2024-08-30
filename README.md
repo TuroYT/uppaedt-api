@@ -6,19 +6,12 @@ API interne pour récuperer les cours sur ade.univ-pau.fr
 
 
 
-## API Reference
-
-#### Get all events
+## documentation
 
 ```http
-  GET /api/planning/getPlanningPerName/{groupname}
+  GET /docs
 ```
 
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `groupname` | `string` | **Required**. return a list of event |
-
-it can be but1_g1, but1_g2, but1_g3, but1_g4
 
 
 

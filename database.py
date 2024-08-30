@@ -1,12 +1,8 @@
 import mysql.connector
 import os
-
-db = mysql.connector.connect(
-  host=os.environ.get("DB_HOST"),
-  user=os.environ.get("DB_USER"),
-  password=os.environ.get("DB_PASS")
-)
-
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Class principale
 class BDD:
@@ -19,8 +15,11 @@ class BDD:
         password=os.environ.get("DB_PASS"),
         database=os.environ.get("DB_NAME")
       )
+    
+      logger.info("Connexion à la base de donnée réussie")
     except Exception as e:
       print(f"Erreur : {e}")
+      logger.error(f"Erreur : {e}")
       
       
   def get_all_formations(self):
@@ -33,6 +32,7 @@ class BDD:
     cursor = self.__db.cursor()
     cursor.execute("SELECT * FROM `uppa_formation`;")
     result = cursor.fetchall()
+    logger.info(f"Récupération de {len(result)} formations")
     
     res = []
     for i in result:
@@ -64,11 +64,11 @@ class BDD:
         "nom":i[1],
         "ics_link":i[2]
       })
-    
+    logger.info(f"Récupération de {len(to_return)} groupes")
     cursor.close()
     return to_return
     
-  def get_ic_link(self, id):
+  def get_ics_link(self, id):
     """get ics link from id
 
     Args:
@@ -78,7 +78,25 @@ class BDD:
         str: lien ics ou None
     """
     cursor = self.__db.cursor()
-    cursor.execute(f"SELECT ics_link FROM `uppa_groupe` WHERE id = {id};")
+    cursor.execute("SELECT lien_ics FROM `uppa_groupe` WHERE id = %s;", (id,))
     result = cursor.fetchall()
     cursor.close()
+    logger.info(f"Récupération du lien ics du groupe {id}")
     return result[0][0]
+
+  def get_groups_from_formation(self, formation_id:int):
+    """Recupere les groupes avec l'id de la formation
+
+    Args:
+        formation_id (int): formation id
+
+    Returns:
+        dict[]: id nom lien_ics
+    """
+    
+    cursor = self.__db.cursor()
+    query = "SELECT g.id, g.nom, g.lien_ics FROM uppa_groupe g INNER JOIN uppa_rel_formation_groupe fg ON g.id = fg.groupe_id WHERE fg.formation_id = %s"
+    cursor.execute(query, (formation_id,))
+    result = cursor.fetchall()
+    cursor.close()
+    return result
