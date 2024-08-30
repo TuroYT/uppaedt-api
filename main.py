@@ -1,4 +1,4 @@
-API_VERSION = "1.1.0"
+API_VERSION = "1.1.1"
 
 
 from fastapi import FastAPI, Response
