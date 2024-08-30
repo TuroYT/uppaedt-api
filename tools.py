@@ -1,9 +1,7 @@
-import time
 import icalendar
 from pytz import timezone
 import requests
 import os
-import json
 from datetime import datetime, timedelta
 
 

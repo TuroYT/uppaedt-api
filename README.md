@@ -1,5 +1,5 @@
 
-# Edt4rt API
+# UPPA-EDT API
 
 API interne pour récuperer les cours sur ade.univ-pau.fr
 
