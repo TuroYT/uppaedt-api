@@ -111,4 +111,11 @@ class BDD:
     cursor.execute(query, (formation_id,))
     result = cursor.fetchall()
     cursor.close()
-    return result
+    resdict = []
+    for i in result:
+      resdict.append({
+        "id":i[0],
+        "nom":i[1],
+        "lien_ics":i[2]
+      }) 
+    return resdict
