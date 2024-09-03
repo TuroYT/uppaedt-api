@@ -69,7 +69,7 @@ def read_root(response:Response):
     return BDD.get_all_groupe()
 
 
-@app.get("/api/groupes/get_from_formationid")
+@app.post("/api/groupes/getFromFormation")
 def read_root(response:Response, formation_id: int):
     response.headers["Access-Control-Allow-Origin"] = '*'
     return BDD.get_groups_from_formation(formation_id=formation_id)
