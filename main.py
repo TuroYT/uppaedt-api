@@ -1,7 +1,7 @@
 API_VERSION = "1.1.3"
 
 
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, HTTPException
 from tools import get_json_from_icsLink
 from fastapi.middleware.cors import CORSMiddleware
 from database import BDD
@@ -53,23 +53,33 @@ def read_root(link : str, response:Response):
     return get_json_from_icsLink(link)
 
 @app.post("/api/planning/getPlanningPerId/")
-def read_root(id : int, response:Response):
+def get_planning_per_id(id: int, response: Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
-    return get_json_from_icsLink(BDD.get_ics_link(id))
-
+    try:
+        return get_json_from_icsLink(BDD.get_ics_link(id))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/formations/getall")
-def read_root(response:Response):
+def get_all_formations(response: Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
-    return BDD.get_all_formations()
+    try:
+        return BDD.get_all_formations()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/groupes/getall")
-def read_root(response:Response):
+def get_all_groupes(response: Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
-    return BDD.get_all_groupe()
-
+    try:
+        return BDD.get_all_groupe()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/groupes/getFromFormation")
-def read_root(response:Response, formation_id: int):
+def get_groups_from_formation(response: Response, formation_id: int):
     response.headers["Access-Control-Allow-Origin"] = '*'
-    return BDD.get_groups_from_formation(formation_id=formation_id)
+    try:
+        return BDD.get_groups_from_formation(formation_id=formation_id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
