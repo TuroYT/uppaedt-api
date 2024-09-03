@@ -4,23 +4,35 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Class principale
-class BDD:
-  def __init__(self) -> None:
-    
-    try:
-      self.__db = mysql.connector.connect(
+def connect():
+      return mysql.connector.connect(
         host=os.environ.get("DB_HOST"),
         user=os.environ.get("DB_USER"),
         password=os.environ.get("DB_PASS"),
         database=os.environ.get("DB_NAME")
       )
+
+# Class principale
+class BDD:
+  def __init__(self) -> None:
+    
+    
+      
+    try:
+      self.__db = connect()
     
       logger.info("Connexion à la base de donnée réussie")
     except Exception as e:
       print(f"Erreur : {e}")
       logger.error(f"Erreur : {e}")
-      
+    
+  def getcursor(self):
+    try:
+      return self.__db.cursor()
+    except Exception as e:
+      logger.error(f"Erreur : {e}")
+      self.__db = connect()
+      return self.__db.cursor()
       
   def get_all_formations(self):
     """Recupère la liste des Formations de l'uppa
@@ -29,7 +41,7 @@ class BDD:
         dict[]: clefs = id, nom, description, lieux
     """
 
-    cursor = self.__db.cursor()
+    cursor = self.getcursor()
     cursor.execute("SELECT * FROM `uppa_formation`;")
     result = cursor.fetchall()
     logger.info(f"Récupération de {len(result)} formations")
@@ -54,7 +66,7 @@ class BDD:
         dict[]: key = id, nom, ics_link
     """
     
-    cursor = self.__db.cursor()
+    cursor = self.getcursor()
     cursor.execute("SELECT * FROM `uppa_groupe`;")
     result = cursor.fetchall()
     to_return = []
@@ -77,7 +89,7 @@ class BDD:
     Returns:
         str: lien ics ou None
     """
-    cursor = self.__db.cursor()
+    cursor = self.getcursor()
     cursor.execute("SELECT lien_ics FROM `uppa_groupe` WHERE id = %s;", (id,))
     result = cursor.fetchall()
     cursor.close()
@@ -94,7 +106,7 @@ class BDD:
         dict[]: id nom lien_ics
     """
     
-    cursor = self.__db.cursor()
+    cursor = self.getcursor()
     query = "SELECT g.id, g.nom, g.lien_ics FROM uppa_groupe g INNER JOIN uppa_rel_formation_groupe fg ON g.id = fg.groupe_id WHERE fg.formation_id = %s"
     cursor.execute(query, (formation_id,))
     result = cursor.fetchall()
