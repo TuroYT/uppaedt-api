@@ -68,17 +68,20 @@ def read_root(response: Response):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/groupes/getall")
-def read_root(response: Response):
+@app.options("/api/groupes/getallwithformations")
+def options_root(response: Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
-    try:
-        return BDD.get_all_groupe()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    response.headers["Access-Control-Allow-Headers"] = 'Content-Type'
+    response.headers["Access-Control-Allow-Methods"] = 'GET, OPTIONS'
+    return Response(status_code=200)
 
 @app.get("/api/groupes/getallwithformations")
 def read_root(response: Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
+    response.headers["Content-Type"] = 'application/json'
+    response.headers["Access-Control-Allow-Headers"] = 'Content-Type'
+    response.headers["Access-Control-Allow-Methods"] = 'GET, OPTIONS'
+    
     try:
         res = []
         formations = BDD.get_all_formations()
