@@ -119,3 +119,27 @@ class BDD:
         "lien_ics":i[2]
       }) 
     return resdict
+  
+  def get_group_from_id(self, id):
+    """get group from id
+
+    Args:
+        id (int): id du groupe
+
+    Returns:
+        dict: id, nom, ics_link
+    """
+    
+    try:
+      cursor = self.getcursor()
+      cursor.execute("SELECT * FROM `uppa_groupe` WHERE id = %s;", (id,))
+      result = cursor.fetchall()
+      cursor.close()
+      return {
+        "id":result[0][0],
+        "nom":result[0][1],
+        "ics_link":result[0][2]
+      }
+    except Exception as e:
+      logger.error(f"Erreur : {e}")
+      return {"error": str(e)}
