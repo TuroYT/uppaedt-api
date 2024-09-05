@@ -53,7 +53,7 @@ def read_root(link : str, response:Response):
     return get_json_from_icsLink(link)
 
 @app.post("/api/planning/getPlanningPerId/")
-def get_planning_per_id(id: int, response: Response):
+def read_root(id: int, response: Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
     try:
         return get_json_from_icsLink(BDD.get_ics_link(id))
@@ -61,7 +61,7 @@ def get_planning_per_id(id: int, response: Response):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/formations/getall")
-def get_all_formations(response: Response):
+def read_root(response: Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
     try:
         return BDD.get_all_formations()
@@ -69,15 +69,36 @@ def get_all_formations(response: Response):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/groupes/getall")
-def get_all_groupes(response: Response):
+def read_root(response: Response):
     response.headers["Access-Control-Allow-Origin"] = '*'
     try:
         return BDD.get_all_groupe()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/api/groupes/getallwithformations")
+def read_root(response: Response):
+    response.headers["Access-Control-Allow-Origin"] = '*'
+    try:
+        res = []
+        formations = BDD.get_all_formations()
+        for formation in formations:
+            res.append({
+                "formation": formation,
+                "groupes": BDD.get_groups_from_formation(formation["id"])
+            })
+        
+        print(res)
+        return res
+    
+    
+    
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/api/groupes/getFromFormation")
-def get_groups_from_formation(response: Response, formation_id: int):
+def read_root(response: Response, formation_id: int):
     response.headers["Access-Control-Allow-Origin"] = '*'
     try:
         return BDD.get_groups_from_formation(formation_id=formation_id)
