@@ -1,7 +1,6 @@
-API_VERSION = "1.1.3"
+API_VERSION = "1.2.0"
 
-
-from fastapi import FastAPI, Response, HTTPException
+from fastapi import FastAPI, HTTPException
 from tools import get_json_from_icsLink
 from fastapi.middleware.cors import CORSMiddleware
 from database import BDD
@@ -11,15 +10,7 @@ Logger = Logger()
 BDD = BDD()
 app = FastAPI()
 
-origins = ["*"]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 group_links = {
     "but1_g1": "https://ade.univ-pau.fr/jsp/custom/modules/plannings/anonymous_cal.jsp?resources=4962,4989&projectId=6&calType=ical&nbWeeks=99",
@@ -36,52 +27,34 @@ app = FastAPI()
 
 
 @app.get("/")
-def read_root(response:Response):
-    response.headers["Access-Control-Allow-Origin"] = '*'
-    Logger.info("Main Acceded")
+def read_root():
     return {"VERSION" : API_VERSION}
 
 @app.get("/api/planning/getPlanningPerName/{groupname}")
-def read_root(groupname : str, response:Response):
-    response.headers["Access-Control-Allow-Origin"] = '*'
+def read_root(groupname : str):
     return get_json_from_icsLink(group_links[groupname], groupname)
 
 
 @app.post("/api/planning/getPlanningPerLink/}")
-def read_root(link : str, response:Response):
-    response.headers["Access-Control-Allow-Origin"] = '*'
+def read_root(link : str):
     return get_json_from_icsLink(link)
 
 @app.post("/api/planning/getPlanningPerId/")
-def read_root(id: int, response: Response):
-    response.headers["Access-Control-Allow-Origin"] = '*'
+def read_root(id: int):
     try:
         return get_json_from_icsLink(BDD.get_ics_link(id))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/formations/getall")
-def read_root(response: Response):
-    response.headers["Access-Control-Allow-Origin"] = '*'
+def read_root():
     try:
         return BDD.get_all_formations()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.options("/api/groupes/getallwithformations")
-def options_root(response: Response):
-    response.headers["Access-Control-Allow-Origin"] = '*'
-    response.headers["Access-Control-Allow-Headers"] = 'Content-Type'
-    response.headers["Access-Control-Allow-Methods"] = 'GET, OPTIONS'
-    return Response(status_code=200)
-
 @app.get("/api/groupes/getallwithformations")
-def read_root(response: Response):
-    response.headers["Access-Control-Allow-Origin"] = '*'
-    response.headers["Content-Type"] = 'application/json'
-    response.headers["Access-Control-Allow-Headers"] = 'Content-Type'
-    response.headers["Access-Control-Allow-Methods"] = 'GET, OPTIONS'
-    
+def read_root():
     try:
         res = []
         formations = BDD.get_all_formations()
@@ -90,7 +63,6 @@ def read_root(response: Response):
                 "formation": formation,
                 "groupes": BDD.get_groups_from_formation(formation["id"])
             })
-        
         print(res)
         return res
     
@@ -101,9 +73,26 @@ def read_root(response: Response):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/groupes/getFromFormation")
-def read_root(response: Response, formation_id: int):
-    response.headers["Access-Control-Allow-Origin"] = '*'
+def read_root( formation_id: int):
     try:
         return BDD.get_groups_from_formation(formation_id=formation_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/api/groupes/getFromId")
+def read_root( id: int):
+    try:
+        return BDD.get_group_from_id(id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+    
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
