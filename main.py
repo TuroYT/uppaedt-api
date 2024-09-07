@@ -7,7 +7,6 @@ from database import BDD
 from logger import Logger
 
 Logger = Logger()
-BDD = BDD()
 app = FastAPI()
 
 
@@ -42,14 +41,14 @@ def read_root(link : str):
 @app.post("/api/planning/getPlanningPerId/")
 def read_root(id: int):
     try:
-        return get_json_from_icsLink(BDD.get_ics_link(id))
+        return get_json_from_icsLink(BDD().get_ics_link(id))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/formations/getall")
 def read_root():
     try:
-        return BDD.get_all_formations()
+        return BDD().get_all_formations()
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -57,11 +56,11 @@ def read_root():
 def read_root():
     try:
         res = []
-        formations = BDD.get_all_formations()
+        formations = BDD().get_all_formations()
         for formation in formations:
             res.append({
                 "formation": formation,
-                "groupes": BDD.get_groups_from_formation(formation["id"])
+                "groupes": BDD().get_groups_from_formation(formation["id"])
             })
         print(res)
         return res
@@ -75,16 +74,23 @@ def read_root():
 @app.post("/api/groupes/getFromFormation")
 def read_root( formation_id: int):
     try:
-        return BDD.get_groups_from_formation(formation_id=formation_id)
+        return BDD().get_groups_from_formation(formation_id=formation_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.post("/api/groupes/getFromId")
+@app.get("/api/groupes/getFromId/{id}")
 def read_root( id: int):
     try:
-        return BDD.get_group_from_id(id)
+        groups = BDD().get_all_groupe()
+        for group in groups:
+            if group["id"] == id:
+                return group
+        return []
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=500, detail=str(e))
+        
+
     
     
 # CORS
