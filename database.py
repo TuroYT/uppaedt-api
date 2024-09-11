@@ -42,7 +42,7 @@ class BDD(object):
     """
 
     cursor = self.getcursor()
-    cursor.execute("SELECT * FROM `uppa_formation`;")
+    cursor.execute("SELECT * FROM `uppa_formation` ORDER BY nom;")
     result = cursor.fetchall()
     logger.info(f"Récupération de {len(result)} formations")
     
@@ -67,7 +67,7 @@ class BDD(object):
     """
     
     cursor = self.getcursor()
-    cursor.execute("SELECT * FROM `uppa_groupe`;")
+    cursor.execute("SELECT * FROM `uppa_groupe` ORDER BY nom;")
     result = cursor.fetchall()
     to_return = []
     for i in result:
@@ -107,7 +107,7 @@ class BDD(object):
     """
     
     cursor = self.getcursor()
-    query = "SELECT g.id, g.nom, g.lien_ics FROM uppa_groupe g INNER JOIN uppa_rel_formation_groupe fg ON g.id = fg.groupe_id WHERE fg.formation_id = %s"
+    query = "SELECT g.id, g.nom, g.lien_ics FROM uppa_groupe g INNER JOIN uppa_rel_formation_groupe fg ON g.id = fg.groupe_id WHERE fg.formation_id = %s ORDER BY g.nom"
     cursor.execute(query, (formation_id,))
     result = cursor.fetchall()
     cursor.close()
