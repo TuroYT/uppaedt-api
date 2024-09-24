@@ -3,6 +3,7 @@
 
 API interne pour récuperer les cours sur ade.univ-pau.fr
 
+Bientot pour hyperplanning
 
 
 
