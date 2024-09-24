@@ -58,10 +58,12 @@ def read_root():
         res = []
         formations = BDD().get_all_formations()
         for formation in formations:
-            res.append({
-                "formation": formation,
-                "groupes": BDD().get_groups_from_formation(formation["id"])
-            })
+            groupes = BDD().get_groups_from_formation(formation["id"])
+            if len(groupes) > 0 :
+                res.append({
+                    "formation": formation,
+                    "groupes": BDD().get_groups_from_formation(formation["id"])
+                })
         print(res)
         return res
     
