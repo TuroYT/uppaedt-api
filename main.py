@@ -1,4 +1,4 @@
-API_VERSION = "1.2.0"
+API_VERSION = "1.2.1"
 
 from fastapi import FastAPI, HTTPException
 from tools import get_json_from_icsLink
