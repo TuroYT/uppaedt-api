@@ -35,13 +35,14 @@ def read_root(groupname : str):
 
 
 @app.post("/api/planning/getPlanningPerLink/}")
-def read_root(link : str):
-    return get_json_from_icsLink(link)
+def read_root(link : str, type=0):
+    return get_json_from_icsLink(link, type)
 
 @app.post("/api/planning/getPlanningPerId/")
 def read_root(id: int):
     try:
-        return get_json_from_icsLink(BDD().get_ics_link(id))
+        groupe = BDD().get_groupe_from_id(id)
+        return get_json_from_icsLink(groupe["lien_ics"], groupe["type"])
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
