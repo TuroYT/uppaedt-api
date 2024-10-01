@@ -120,3 +120,22 @@ class BDD(object):
       }) 
     return resdict
   
+  def get_groupe_from_id(self, id):
+    """get groupe from id
+
+    Args:
+        id (int): groupe id
+
+    Returns:
+        dict: id, nom, lien_ics
+    """
+    cursor = self.getcursor()
+    cursor.execute("SELECT * FROM `uppa_groupe` WHERE id = %s;", (id,))
+    result = cursor.fetchall()
+    cursor.close()
+    return {
+      "id":result[0][0],
+      "nom":result[0][1],
+      "lien_ics":result[0][2],
+      "type":result[0][3]
+    }
